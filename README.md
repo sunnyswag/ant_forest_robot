@@ -8,3 +8,5 @@ Reference：<br>
 [Auto.js-VSCode-Extension](https://github.com/hyb1996/Auto.js-VSCode-Extension)
 
 [Auto.js](https://github.com/hyb1996/Auto.js)
+
+[Auto.js 官方文档](https://hyb1996.github.io/AutoJs-Docs/#/)
