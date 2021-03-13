@@ -69,6 +69,8 @@ function collectOthers(){
         collectEnergy();
         sleep(500);
     }
+    // TODO: bug
+    // TODO：能量块的颜色识别
     click("返回我的森林");
     toast("能量收集完毕");
     exit();
