@@ -1,5 +1,7 @@
 var screen_width = device.width;
 var screen_height = device.height;
+var energy_mature = colors.rgb(211, 253, 0);
+var finish_collection = colors.rgb(251, 253, 252);
 setScreenMetrics(screen_width, screen_height); // 适配其他分辨率的手机
 
 mainFunction();
@@ -11,7 +13,7 @@ mainFunction();
 
 function mainFunction(){
     unlock(); // 解锁
-    // init();
+    init();
     openAlipay();
     enterAntForest();
     collectOthers(); // TODO
@@ -54,21 +56,27 @@ function enterAntForest(){
     click("蚂蚁森林");
     sleep(4000);
     click("140", "645"); // 关闭弹窗
-
+    sleep(500);
     // 收集自己的能量
     collectEnergy();
-    
+    click(900, 2000);
     toastLog("自己的能量已经收集完成");
     sleep(2000);
 }
 
 function collectOthers(){
-    while(!click("能量收完啦")){
+    do{
+        var tmp_color = colors.pixel(captureScreen(), 395, 460);
         click(1000, 1580);
         sleep(2000);
         collectEnergy();
         sleep(500);
-    }
+    }while(!colors.isSimilar(
+        tmp_color,
+        finish_collection, {
+            threshold: 10
+        })
+    )
     // TODO: bug
     // TODO：能量块的颜色识别
     click("返回我的森林");
@@ -80,7 +88,15 @@ function collectOthers(){
 function collectEnergy(){
     // height：570 ~ 950
     // width ：130 ~ 960
-    for(var row = screen_height * 0.238; row < screen_height * 0.396; row += 80)
-        for(var column = screen_width * 0.12; column < screen_width * 0.889; column += 80)
-            click(column, row);
+    do{
+        var img = captureScreen();
+        var point = findColor(img, energy_mature, {
+        // region[0], region[1])表示找色区域的左上角；region[2]*region[3]表示找色区域的宽高
+        region: [screen_width * 0.12, screen_height * 0.238, screen_width * 0.769, screen_height * 0.158],
+        threshold: 4
+        });
+
+        click(point.x, point.y);
+        sleep(500);
+    }while(point != null);
 }
