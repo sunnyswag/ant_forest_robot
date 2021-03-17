@@ -1,7 +1,9 @@
+
 var screen_width = device.width;
 var screen_height = device.height;
 var energy_mature = colors.rgb(211, 253, 0);
 var finish_collection = colors.rgb(251, 253, 252);
+
 setScreenMetrics(screen_width, screen_height); // 适配其他分辨率的手机
 
 mainFunction();
@@ -64,23 +66,26 @@ function enterAntForest(){
     sleep(2000);
 }
 
+// TODO 设置为定时任务
+
 function collectOthers(){
-    do{
-        var tmp_color = colors.pixel(captureScreen(), 395, 460);
-        click(1000, 1580);
-        sleep(2000);
-        collectEnergy();
-        sleep(500);
-    }while(!colors.isSimilar(
-        tmp_color,
-        finish_collection, {
-            threshold: 10
-        })
-    )
-    // TODO: bug
-    // TODO：能量块的颜色识别
+    click(1000, 1580);
+    while(true){
+        var image = captureScreen();
+        var tmp_color = images.pixel(image, 395, 460);
+        var similar = colors.isSimilar(tmp_color, finish_collection)
+        if(!similar){
+            click(1000, 1580);
+            sleep(2000);
+            collectEnergy();
+            sleep(500);
+        }else{
+            break;
+        }
+    }
+
     click("返回我的森林");
-    toast("能量收集完毕");
+    toastLog("能量收集完毕！");
     exit();
 
 }
@@ -95,6 +100,9 @@ function collectEnergy(){
         region: [screen_width * 0.12, screen_height * 0.238, screen_width * 0.769, screen_height * 0.158],
         threshold: 4
         });
+
+        if(point == null) // 重点 2
+            break;
 
         click(point.x, point.y);
         sleep(500);
