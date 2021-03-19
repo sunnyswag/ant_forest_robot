@@ -1,8 +1,9 @@
 
 var screen_width = device.width;
 var screen_height = device.height;
-var energy_mature = colors.rgb(211, 253, 0);
-var finish_collection = colors.rgb(251, 253, 252);
+var energy_mature = colors.rgb(211, 253, 0); // 能量可收集时的颜色
+var finish_collection = colors.rgb(251, 253, 252); // 能量收集完成时的颜色判断
+var runTime = '7:25'; // 运行时间
 
 setScreenMetrics(screen_width, screen_height); // 适配其他分辨率的手机
 
@@ -12,14 +13,16 @@ mainFunction();
 // 坐标在左上角
 // 设置 更多设置 开发者选项 显示指针位置：获取当前位置
 
-
 function mainFunction(){
-    unlock(); // 解锁
-    init();
-    openAlipay();
-    enterAntForest();
-    collectOthers(); // TODO
-    getAlipyPoints(); // TODO
+    if(checkTime()){
+        unlock(); // 解锁
+        init(); // 获取截屏请求
+        openAlipay();
+        enterAntForest();
+        collectOthers();
+        getAlipyPoints();
+        comeBack();
+    }
 }
 
 function init(){
@@ -85,8 +88,6 @@ function collectOthers(){
     }
 
     click("返回我的森林");
-    toastLog("能量收集完毕！");
-    exit();
 
 }
 
@@ -107,4 +108,31 @@ function collectEnergy(){
         click(point.x, point.y);
         sleep(500);
     }while(point != null);
+}
+
+function comeBack(){
+    toastLog("能量收集完毕！");
+    back();
+    sleep(1000);
+    back();
+    exit();
+}
+
+function getAlipyPoints(){
+    sleep();
+    // TODO
+}
+
+function checkTime(){
+    var now = new Date();
+    var hour = now.getHours();
+    var minuite = now.getMinutes();
+    var runTimeList = runTime.split(":");
+    var runT = 60 * Number(runTimeList[0]) + Number(runTimeList[1]);
+    var time  = 60 * hour + minuite;
+    if(time > runT){
+        return true;
+    }else{
+        return false;
+    }
 }
